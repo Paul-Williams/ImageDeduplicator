@@ -67,6 +67,8 @@ namespace ImageDeduper
 
       if (removeThese.Length != 0) removeThese.ForEach(x => events.Remove(x));
 
+      // TODO: Add code here to solve issue #1
+
       if (events.Count == 1) return new FileSystemEventCollection<DirectoryPath>(events);
 
       var r = new FileSystemEventCollection<DirectoryPath>();
