@@ -1,0 +1,32 @@
+﻿File paths from disk
+════════╦═══════════
+		║
+		║ FileInfo
+		V
+╔════════════════╗		
+║ JustNewFilter  ║	Single thread. Owns dbContext
+║[TransformBlock]║	Filter input 'where !in database'
+╚═══════╦════════╝  	
+		║
+		║ FileInfo [Only those files not in database]
+		▼
+╔════════════════╗
+║ TransformBlock ║	Multi-thread. ??
+║                ║	Convert FileInfo -> ImageFileInfo
+╚═══════╦════════╝ 
+		║
+		║ ImageFileInfo
+		▼
+╔════════════════╗											   ═╗
+║ TransformBlock ║ Single thread.								║______	This block could be avoided
+║                ║ Convert ImageFileInfo -> ImageInfoEntity		║		by getting rid of one of the types.
+╚═══════╦════════╝											   ═╝
+		║
+		║ ImageFileInfo
+		▼
+                                          
+
+
+
+
+

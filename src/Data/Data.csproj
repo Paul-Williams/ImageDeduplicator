@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<!--<UseWindowsForms>true</UseWindowsForms>-->
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RootNamespace>Data</RootNamespace>
+		<AssemblyName>Data</AssemblyName>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
+	  <PackageReference Include="EntityFramework" Version="6.4.4" />
+	  <PackageReference Include="PW.Drawing" Version="2.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Common\Common.csproj" />
+		<ProjectReference Include="..\ImageComparison\ImageComparison.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="PW.Data.EntityFramework">
+	    <HintPath>C:\Tfs\Class Libraries\PW.Data.EntityFramework\PW.Data.EntityFramework\bin\Release\PW.Data.EntityFramework.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<PropertyGroup Label="Globals">
+		<SccProjectName>%24/Image Deduplicator/src/Data</SccProjectName>
+		<SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+		<SccAuxPath>https://pwdevs.visualstudio.com</SccAuxPath>
+		<SccLocalPath>.</SccLocalPath>
+	</PropertyGroup>
+
+
+</Project>

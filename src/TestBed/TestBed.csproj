@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>TestBed</RootNamespace>
+    <AssemblyName>TestBed</AssemblyName>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{ccbef675-173a-43cc-9014-ebd5995feb1f}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{7E80574B-A359-4E62-9253-FE8CC99857FC}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageComparison\ImageComparison.csproj">
+      <Project>{9317de4a-213d-4afc-b58f-ed401204534a}</Project>
+      <Name>ImageComparison</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageDeduper\ImageDeduper.csproj">
+      <Project>{FBAB5858-646A-4ABB-A908-818A7913F5D4}</Project>
+      <Name>ImageDeduper</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>%24/Image Deduplicator/src/TestBed</SccProjectName>
+	  <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+	  <SccAuxPath>https://pwdevs.visualstudio.com</SccAuxPath>
+	  <SccLocalPath>.</SccLocalPath>
+	</PropertyGroup>
+			
+</Project>

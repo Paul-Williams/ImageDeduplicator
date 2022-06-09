@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<!--<UseWindowsForms>true</UseWindowsForms>-->
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RootNamespace>XnaFan.ImageComparison</RootNamespace>
+		<AssemblyName>XnaFan.ImageComparison</AssemblyName>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{ccbef675-173a-43cc-9014-ebd5995feb1f}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+      <Version>6.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="PW.Common">
+      <Version>4.0.11</Version>
+    </PackageReference>
+  </ItemGroup>
+	
+	<PropertyGroup Label="Globals">
+	  <SccProjectName>%24/Image Deduplicator/src/ImageComparison</SccProjectName>
+	  <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+	  <SccAuxPath>https://pwdevs.visualstudio.com</SccAuxPath>
+	  <SccLocalPath>.</SccLocalPath>
+	</PropertyGroup>
+	
+</Project>

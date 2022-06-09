@@ -1,0 +1,201 @@
+﻿BACKUP OF WORKING VERSION
+Before refactoring to remove blocks
+Fall-back: 14-03-19 23:01
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using Data.Models;
+using PubSubEvents;
+using PW.Data.EntityFramework;
+using PW.Extensions;
+using PW.FailFast;
+using PW.IO;
+using XnaFan.ImageComparison;
+using static PW.IgnoreExceptions;
+
+namespace Data
+{
+  public static partial class DatabaseRefresh
+  {
+
+
+
+    private static readonly DataflowLinkOptions WithCompletionPropagation = new DataflowLinkOptions() { PropagateCompletion = true };
+
+    public static async Task<(int Created, int Updated, int Deleted)> PerformRefreshAsync(DirectoryInfo start)
+    {
+      Guard.MustExist(start, nameof(start));
+
+      try
+      {
+        var state = new PerformRefreshAsyncState();
+
+        // NB: Data queried afresh here. Cached data may well be out of date after performing refresh (above)
+        //state.Deleted = (await RemoveEntitiesForMissingFiles(start)).Length;
+
+        using (var bi = new BulkOperations<DataContext, ImageInfoEntity>())
+        {
+
+          await state.InitializeCache(start);
+
+          // Create Blocks
+          var initialDirectoryBuffer = new BufferBlock<DirectoryInfo>();
+          var existingDirectoryToFilesBlock = TransformExistingDirectoryToFilesBlock(state);
+          var newDirectoryToFilesBlock = TransformNewDirectoryToFilesBlock();
+          var fileToEntityBlock = TransformFileToEntityBlock(state);
+          var updateDatabaseBlock = new ActionBlock<EntityOp>(x =>
+          {
+            if (x.Operation == DbOperation.Insert)
+            {
+              bi.Insert(x.Entity);
+              Interlocked.Increment(ref state.Created);
+              state.StatusEvent.Publish("Adding entity: " + x.Entity.Path);
+            }
+            else
+            {
+              bi.Update(x.Entity);
+              Interlocked.Increment(ref state.Updated);
+              state.StatusEvent.Publish("Updating entity: " + x.Entity.Path);
+            }
+
+          });
+
+          // Link Blocks
+          initialDirectoryBuffer.LinkTo(existingDirectoryToFilesBlock, WithCompletionPropagation, d => state.Directories.Contains(d));
+          initialDirectoryBuffer.LinkTo(newDirectoryToFilesBlock, WithCompletionPropagation);
+
+          // Don't propagate completion of 'xxxToFilesBlock' -> 'fileToEntityBlock'
+          // as 'fileToEntityBlock' is not complete until both feeds are complete.
+          newDirectoryToFilesBlock.LinkTo(fileToEntityBlock);
+          existingDirectoryToFilesBlock.LinkTo(fileToEntityBlock);
+
+          // Some pictures may be corrupt and cannot be opened. In this case a null entity will be returned.
+          // This is of no use, so we will dump it to a null target block. We could do something better, but you know...
+          fileToEntityBlock.LinkTo(DataflowBlock.NullTarget<EntityOp>(), x => x.Entity is null);
+          fileToEntityBlock.LinkTo(updateDatabaseBlock, WithCompletionPropagation);
+
+          // Begin DataFlow
+          foreach (var directory in DataContextHelper.EnumerateDirectories(start))
+            initialDirectoryBuffer.Post(directory);
+
+          initialDirectoryBuffer.Complete();
+
+          await Task.WhenAll(newDirectoryToFilesBlock.Completion, existingDirectoryToFilesBlock.Completion).ContinueWith(_ => fileToEntityBlock.Complete());
+          await Task.WhenAll(fileToEntityBlock.Completion, updateDatabaseBlock.Completion);
+          Trace.WriteLine("YAY");
+
+          return (state.Created, state.Updated, state.Deleted);
+        }
+      }
+      catch (Exception ex)
+      {
+
+        throw;
+      }
+
+
+
+    }
+
+    /// <summary>
+    /// Delete all entities which no longer exist on disk.
+    /// Returns the number of deleted entities.
+    /// </summary>
+    public static async Task<int[]> RemoveEntitiesForMissingFiles(DirectoryInfo start)
+    {
+
+      var statusEvent = Lib.GetEvent<StatusInfoEvent>();
+
+      using (var context = new DataContext())
+      {
+        statusEvent.Publish("Getting entity ids for deleted image files.");
+
+        // Get Id's of entities where the file no longer exists on disk.
+        var ids = await Task.Run(() =>
+        {
+          return context.ImageInfos.Where(x => x.Path.StartsWith(start.FullName))
+         .Select(x => new { x.Id, x.Path })
+         .ToList()
+         .Where(x => !File.Exists(x.Path))
+         .Select(x => x.Id).ToArray();
+        });
+
+        statusEvent.Publish($"Deleting {ids.Length} orphaned entities");
+        // If any were found, delete the from data database.
+        if (ids.Length != 0) await context.ExecuteDeleteByIdAsync<ImageInfoEntity, int>(ids);
+
+        return ids;
+      }
+    }
+
+
+
+    /// <summary>
+    /// Returns a block for transforming a file, which already exists in the database, into it's database entity.
+    /// The DbOperation argument is used to either insert a new entity, or update an existing entity
+    /// </summary>
+    private static TransformBlock<FileOp, EntityOp> TransformFileToEntityBlock(PerformRefreshAsyncState state) =>
+      new TransformBlock<FileOp, EntityOp>
+        (fileOp =>
+        {
+          if (Try(x => new ImageInfo(x), fileOp.File) is ImageInfo imageInfo)
+          {
+            if (fileOp.Operation == DbOperation.Update)
+              return new EntityOp(imageInfo.ToEntity(state.FilePathToEntityMapping[fileOp.File.FullName].Id), fileOp.Operation);
+            else
+              return new EntityOp(imageInfo.ToEntity(), fileOp.Operation);
+          }
+          // HACK: WE don't want to do this. 
+          // When a picture cannot be opened we would rather simply abort the operation.
+          else
+          {
+            state.StatusEvent.Publish("Failed to load image: " + fileOp.File.FullName);
+            return new EntityOp(null, fileOp.Operation);
+          }
+
+        }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 8 });
+
+
+    /// <summary>
+    /// Returns a block for transforming directories, not yet in the database, into multiple FileInfo instances. 
+    /// Because we know that none of these files will already be in the database, we can just go ahead and insert them.
+    /// </summary>
+    private static TransformManyBlock<DirectoryInfo, FileOp> TransformNewDirectoryToFilesBlock() =>
+      new TransformManyBlock<DirectoryInfo, FileOp>(directory =>
+        directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly)
+          .Select(file => new FileOp(file, DbOperation.Insert)));
+
+    /// <summary>
+    /// Returns a block for transforming directories, already fully or partially in the database, into multiple FileInfo instances. 
+    /// FileInfo objects are only return for those either missing from the database, or that need updating.
+    /// Existing, unchanged files are omitted.
+    /// </summary>
+    private static TransformManyBlock<DirectoryInfo, FileOp> TransformExistingDirectoryToFilesBlock(PerformRefreshAsyncState cache) =>
+      new TransformManyBlock<DirectoryInfo, FileOp>
+        (directory =>
+        {
+          var fileOps = new List<FileOp>();
+
+          foreach (var file in directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly))
+          {
+            if (!cache.FilePathToEntityMapping.ContainsKey(file.FullName)) fileOps.Add(new FileOp(file, DbOperation.Insert));
+            else if (cache.HasChanged(file)) fileOps.Add(new FileOp(file, DbOperation.Update));
+          }
+
+          return fileOps;
+        });
+
+
+    private enum DbOperation { Update, Insert, Delete }
+
+  }
+
+}
