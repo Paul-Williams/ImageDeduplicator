@@ -39,7 +39,7 @@ namespace Data.Models
     /// <summary>
     /// Updates this <see cref="ImageEntity"/> with values from another instance. <see cref="ImageEntity.Id"/> is left unchanged.
     /// </summary>    
-    public void MergeChangesFrom(ImageEntity other!!)
+    public void MergeChangesFrom(ImageEntity other)
     {
       if (ReferenceEquals(this, other)) return;
 

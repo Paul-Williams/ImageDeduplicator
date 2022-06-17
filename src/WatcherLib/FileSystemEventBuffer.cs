@@ -27,7 +27,7 @@ namespace ImageDeduper
     /// <summary>
     /// Used to retry events when the file was read-locked etc. If the retry count is exceeded, then the event is discarded.
     /// </summary>
-    public void RequeueFailedEvent(FileSystemEvent<T> failedEvent!!)
+    public void RequeueFailedEvent(FileSystemEvent<T> failedEvent)
     {
       failedEvent.RetryCount += 1;
 

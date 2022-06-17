@@ -17,9 +17,9 @@ namespace ImageDeduper
   {
 
     public EventListProcessorThread(
-      FileSystemEventBuffer<DirectoryPath> DirectoryEventBuffer!!,
-      FileSystemEventBuffer<FilePath> FileEventBuffer!!,
-      IEventAggregator ea!!
+      FileSystemEventBuffer<DirectoryPath> DirectoryEventBuffer,
+      FileSystemEventBuffer<FilePath> FileEventBuffer,
+      IEventAggregator ea
       )
     {
       this.DirectoryEventBuffer = DirectoryEventBuffer;

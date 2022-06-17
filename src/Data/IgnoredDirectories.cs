@@ -30,12 +30,12 @@ namespace Data
     //}
 
 
-    public static bool IsIgnored(DirectoryPath directory!!)
+    public static bool IsIgnored(DirectoryPath directory)
     {
       return directory.Value.StartsWithAny(_ignoreList, StringComparison.OrdinalIgnoreCase); //IsIgnored(directory.Value);
     }
 
-    public static bool IsIgnored(FilePath file!!)
+    public static bool IsIgnored(FilePath file)
     {
       return IsIgnored(file.DirectoryPath);//IsIgnored(file.DirectoryName);
     }

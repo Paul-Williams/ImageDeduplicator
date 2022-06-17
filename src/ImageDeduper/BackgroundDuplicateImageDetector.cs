@@ -4,11 +4,9 @@ using Data;
 using Data.Models;
 using Prism.Events;
 using PubSubEvents.DatabaseEvents;
-using PW.IO.FileSystemObjects;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 // NOTES:
@@ -28,7 +26,7 @@ namespace ImageDeduper
   /// </summary>
   internal class BackgroundDuplicateImageDetector
   {
-    public BackgroundDuplicateImageDetector(IEventAggregator ea!!)
+    public BackgroundDuplicateImageDetector(IEventAggregator ea)
     {
       DuplicateImageAddedEvent = ea.GetEvent<DuplicateImageAddedEvent>();
       ExceptionEvent = ea.GetEvent<PubSubEvents.ExceptionEvent>();
@@ -65,7 +63,7 @@ namespace ImageDeduper
 
     private CancellationTokenSource ThreadCanceller { get; }
 
-    private void Enqueue(ImageAddedEventArgs ea!!)
+    private void Enqueue(ImageAddedEventArgs ea)
     {
       Queue.Add(ea.EntityId);
     }
@@ -80,8 +78,8 @@ namespace ImageDeduper
         foreach (var entityId in Queue.GetConsumingEnumerable(token))
         {
           // Construct the event message - If the queue has further items, then include this information in the message.
-          static string GetMsg(int queueLength) => queueLength > 0 
-            ? $"Checking for duplicate. {queueLength} remaining in queue." 
+          static string GetMsg(int queueLength) => queueLength > 0
+            ? $"Checking for duplicate. {queueLength} remaining in queue."
             : "Checking for duplicate.";
 
           StatusInfo.Publish(GetMsg(Queue.Count));

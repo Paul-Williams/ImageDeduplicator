@@ -8,7 +8,7 @@ namespace ImageDeduper
 {
   internal static class BlockingCollectionExtensions
   {
-    public static List<T> TakeAll<T>(this BlockingCollection<T> collection!!)
+    public static List<T> TakeAll<T>(this BlockingCollection<T> collection)
     {
       var r = new List<T>();
       while (collection.TryTake(out var item)) r.Add(item);

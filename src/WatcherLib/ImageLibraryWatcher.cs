@@ -24,7 +24,7 @@ namespace ImageDeduper
     /// <summary>
     /// Constructor
     /// </summary>
-    public ImageLibraryWatcher(DirectoryPath libraryDirectory!!, IEventAggregator ea!!)
+    public ImageLibraryWatcher(DirectoryPath libraryDirectory, IEventAggregator ea)
     {
       //EA = ea ?? throw new ArgumentNullException(nameof(ea));
       LibraryDirectory = libraryDirectory;

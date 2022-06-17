@@ -326,7 +326,7 @@ namespace ImageDeduper
 //      {
 //        EnableButtons(false);
 
-//        if (ShowQuestion("ARE YOU REALLY SURE?!!") != QuestionResult.Yes) return;
+//        if (ShowQuestion("ARE YOU REALLY SURE?") != QuestionResult.Yes) return;
 
 
 //        using var context = DataContextFactory();

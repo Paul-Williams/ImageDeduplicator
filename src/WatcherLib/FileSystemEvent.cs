@@ -16,7 +16,7 @@ namespace ImageDeduper
   /// </summary>
   internal class FileSystemEvent<T> where T : class, IFileSystemPath
   {
-    private FileSystemEvent(FileSystemEventType eventType, T file!!, T? oldFile, long timeStamp, int retryCount)
+    private FileSystemEvent(FileSystemEventType eventType, T file, T? oldFile, long timeStamp, int retryCount)
     {
       EventType = eventType;
       Path = file;
@@ -25,7 +25,7 @@ namespace ImageDeduper
       RetryCount = retryCount;
     }
 
-    private FileSystemEvent(FileSystemEventType eventType, T file!!, T oldFile!!)
+    private FileSystemEvent(FileSystemEventType eventType, T file, T oldFile)
     {
       EventType = eventType;
       Path = file;
@@ -34,7 +34,7 @@ namespace ImageDeduper
       RetryCount = 0;
     }
 
-    private FileSystemEvent(FileSystemEventType eventType, T file!!)
+    private FileSystemEvent(FileSystemEventType eventType, T file)
     {
       if (eventType == FileSystemEventType.Renamed)
         throw new InvalidOperationException("Renamed events requires both a new and old path. Use the constructor which allows two file paths.");
@@ -104,7 +104,7 @@ namespace ImageDeduper
     /// Combines a sequence of events for the same directory.
     /// For example, often, when an image is edited and saved, multiple 'changed' events will fire.
     /// </summary>
-    public static FileSystemEvent<DirectoryPath> Combine(FileSystemEvent<DirectoryPath>[] events!!)
+    public static FileSystemEvent<DirectoryPath> Combine(FileSystemEvent<DirectoryPath>[] events)
     {
       if (events.Length == 0) throw new ArgumentException("Array contains no elements.", nameof(events));
       if (events.Length == 1) return events[0];
@@ -121,7 +121,7 @@ namespace ImageDeduper
     /// Combines a sequence of events for the same file.
     /// For example, often, when an image is edited and saved, multiple 'changed' events will fire.
     /// </summary>
-    public static FileSystemEvent<FilePath> Combine(FileSystemEvent<FilePath>[] events!!)
+    public static FileSystemEvent<FilePath> Combine(FileSystemEvent<FilePath>[] events)
     {
       if (events.Length == 0) throw new ArgumentException("Array contains no elements.", nameof(events));
       if (events.Length == 1) return events[0];
@@ -167,7 +167,7 @@ namespace ImageDeduper
     /// <param name="e1">The first event.</param>
     /// <param name="e2">The subsequent event.</param>
     /// <returns></returns>
-    private static FileSystemEvent<FilePath> Combine(FileSystemEvent<FilePath> e1!!, FileSystemEvent<FilePath> e2!!)
+    private static FileSystemEvent<FilePath> Combine(FileSystemEvent<FilePath> e1, FileSystemEvent<FilePath> e2)
     {
       var i = e1.EventType;
       var n = e2.EventType;

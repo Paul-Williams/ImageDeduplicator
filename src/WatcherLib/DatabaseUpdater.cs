@@ -16,7 +16,7 @@ namespace ImageDeduper
   internal class DatabaseUpdater : IDisposable
   {
 
-    public DatabaseUpdater(IEventAggregator ea!!)
+    public DatabaseUpdater(IEventAggregator ea)
     {
       EA = ea;
       Db = new Data.DataContext();
@@ -91,7 +91,7 @@ namespace ImageDeduper
     }
 
 
-    public void DeleteImage(FilePath image!!)
+    public void DeleteImage(FilePath image)
     {
       try
       {
@@ -105,7 +105,7 @@ namespace ImageDeduper
 
     public void ChangePath(FileRenamePair paths) => ChangePath(paths.NewPath, paths.OldPath!);
 
-    public void ChangePath(FilePath newPath!!, FilePath oldPath!!)
+    public void ChangePath(FilePath newPath, FilePath oldPath)
     {
       try
       {

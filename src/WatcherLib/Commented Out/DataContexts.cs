@@ -7,7 +7,7 @@
 //using System.Data.Entity;
 
 
-//// This seems a bit of a mess !!
+//// This seems a bit of a mess 
 
 
 //namespace ImageDeduper

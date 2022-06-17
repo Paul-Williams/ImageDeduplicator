@@ -16,19 +16,19 @@ namespace PW.ImageDeduplicator.Common
 
   public static class TextBoxExtensions
   {
-    public static void SetTapStops(this TextBox tb!!, int tabSize)
+    public static void SetTapStops(this TextBox tb, int tabSize)
     {
       _ = NativeMethods.SendMessage(tb.Handle, NativeMethods.EM_SETTABSTOPS, 1, new[] { tabSize * 4 });
     }
 
-    public static void SetTapStops(this TextBox tb!!, params int[] tabSizes!!)
+    public static void SetTapStops(this TextBox tb, params int[] tabSizes)
     {
       if (tabSizes.Length == 0) throw new ArgumentException("Array is empty.", nameof(tabSizes));
 
       _ = NativeMethods.SendMessage(tb.Handle, NativeMethods.EM_SETTABSTOPS, tabSizes.Length, tabSizes);
     }
 
-    public static void ResetTabStops(this TextBox tb!!)
+    public static void ResetTabStops(this TextBox tb)
     {
       _ = NativeMethods.SendMessage(tb.Handle, NativeMethods.EM_SETTABSTOPS, 0, new[] { 0 });
     }

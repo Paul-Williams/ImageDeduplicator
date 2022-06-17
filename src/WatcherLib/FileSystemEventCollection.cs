@@ -47,7 +47,7 @@ namespace ImageDeduper
     public IEnumerable<FileSystemEvent<T>> Changed => Events.Where(x => x.EventType == FileSystemEventType.Changed);
 
 
-    public static FileSystemEventCollection<DirectoryPath> Combine(ICollection<FileSystemEvent<DirectoryPath>> events!!)
+    public static FileSystemEventCollection<DirectoryPath> Combine(ICollection<FileSystemEvent<DirectoryPath>> events)
     {
       if (events.Count == 0) return new FileSystemEventCollection<DirectoryPath>();
       if (events.Count == 1) return new FileSystemEventCollection<DirectoryPath>(events);

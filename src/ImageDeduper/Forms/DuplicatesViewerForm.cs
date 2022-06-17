@@ -122,7 +122,7 @@ public partial class DuplicatesViewerForm : Form
   }
   private void DataGrid_KeyDown(object sender, KeyEventArgs e)
   {
-    // This code is copy-paste-modify duplicate of that in DuplicateImagesContextMenu !!
+    // This code is copy-paste-modify duplicate of that in DuplicateImagesContextMenu 
     try
     {
       if (e.KeyCode == Keys.Delete)

@@ -10,7 +10,7 @@ namespace ImageDeduper
     public FilePath OldPath { get; }
     public FilePath NewPath { get; }
 
-    public FileRenamePair(FilePath oldPath!!, FilePath newPath!!)
+    public FileRenamePair(FilePath oldPath, FilePath newPath)
     {
       OldPath = oldPath;
       NewPath = newPath;

@@ -35,7 +35,7 @@ namespace ImageDeduper.Controls
 
     }
 
-    public void ProvideData(string caption!!, ImageEntity imageEntity!!)
+    public void ProvideData(string caption, ImageEntity imageEntity)
     {
       CaptionLabel.Text = caption;
       ImageEntity = imageEntity;

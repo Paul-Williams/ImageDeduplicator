@@ -48,7 +48,7 @@ namespace XnaFan.ImageComparison
     {
       Guard.NotNull(file, nameof(file));
 
-      // BUG !! -- FileInfo.Exists value is cached and does not refresh.
+      // BUG  -- FileInfo.Exists value is cached and does not refresh.
       if (!file.Exists) throw new FileNotFoundException("File not found: " + file.FullName);
 
 

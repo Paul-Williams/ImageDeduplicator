@@ -62,7 +62,7 @@ public class DataContext : DbContext
   private static SqlParameter IdParamFactory(int id) =>
     new("@id", id) { SqlDbType = System.Data.SqlDbType.Int };
 
-  public ImageEntity? FuzzyMatchBytesFirstOrDefault(ImageEntity newImage!!)
+  public ImageEntity? FuzzyMatchBytesFirstOrDefault(ImageEntity newImage)
   {
     return newImage.Id switch
       {
@@ -94,7 +94,7 @@ public class DataContext : DbContext
   /// Immediately deletes all images within the specified directory AND sub-directories. Call to <see cref="DbContext.SaveChanges"/> is not required.
   /// </summary>
   /// <param name="directory"></param>
-  public int DeleteAllImages(DirectoryPath directoryPath!!)
+  public int DeleteAllImages(DirectoryPath directoryPath)
   {
     var sql = $"DELETE FROM [{ImageEntity.TableName}] WHERE [{nameof(ImageEntity.Path)}] LIKE @LikeValue";
 
