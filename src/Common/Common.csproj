@@ -20,11 +20,27 @@
       <Version>8.1.97</Version>
     </PackageReference>
     <PackageReference Include="PW.Common">
-      <Version>4.0.11</Version>
+      <Version>4.0.12</Version>
     </PackageReference>
+    <PackageReference Include="PW.Drawing" Version="3.0.0" />
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PW.WebP">
+      <HintPath>..\..\..\..\..\tfs\Class Libraries\PW.WebP\PW.WebP\bin\Release\PW.WebP.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="libwebp_x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="libwebp_x86.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 	<PropertyGroup Label="Globals">

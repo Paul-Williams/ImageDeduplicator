@@ -13,7 +13,7 @@
 	<ItemGroup>
 	  <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
 	  <PackageReference Include="EntityFramework" Version="6.4.4" />
-	  <PackageReference Include="PW.Drawing" Version="2.0.0" />
+	  <PackageReference Include="PW.Drawing" Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

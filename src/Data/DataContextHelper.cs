@@ -117,7 +117,7 @@ namespace Data
     //    IEnumerable<FileInfo> FilePathsFromDisk() =>
     //      source.EnumerateAuthorizedDirectories(true)
     //      .Where(x => x.Name != "$RECYCLE.BIN")
-    //      .SelectMany((x => x.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly)));
+    //      .SelectMany((x => x.EnumerateImages(SearchOption.TopDirectoryOnly)));
 
 
     //    List<FileInfo> newFiles;
@@ -166,7 +166,7 @@ namespace Data
 
     //public static IEnumerable<FileInfo> EnumerateImageFiles(DirectoryInfo start) =>
     //  EnumerateDirectories(start)
-    //  .SelectMany(d => d.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly));
+    //  .SelectMany(d => d.EnumerateImages(SearchOption.TopDirectoryOnly));
 
   }
 }

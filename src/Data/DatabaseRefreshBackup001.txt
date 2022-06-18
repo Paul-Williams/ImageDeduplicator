@@ -170,7 +170,7 @@ namespace Data
     /// </summary>
     private static TransformManyBlock<DirectoryInfo, FileOp> TransformNewDirectoryToFilesBlock() =>
       new TransformManyBlock<DirectoryInfo, FileOp>(directory =>
-        directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly)
+        directory.EnumerateImages(SearchOption.TopDirectoryOnly)
           .Select(file => new FileOp(file, DbOperation.Insert)));
 
     /// <summary>
@@ -184,7 +184,7 @@ namespace Data
         {
           var fileOps = new List<FileOp>();
 
-          foreach (var file in directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly))
+          foreach (var file in directory.EnumerateImages(SearchOption.TopDirectoryOnly))
           {
             if (!cache.FilePathToEntityMapping.ContainsKey(file.FullName)) fileOps.Add(new FileOp(file, DbOperation.Insert));
             else if (cache.HasChanged(file)) fileOps.Add(new FileOp(file, DbOperation.Update));

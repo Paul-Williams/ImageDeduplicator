@@ -1,17 +1,10 @@
 ﻿#nullable enable
 
-using Data.Models;
 using Prism.Events;
 using PubSubEvents;
-using PubSubEvents.DatabaseEvents;
-using PW.Extensions;
 using PW.IO.FileSystemObjects;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
+using static PW.ImageDeduplicator.Common.ImageHelper;
 
 namespace ImageDeduper
 {
@@ -100,14 +93,7 @@ namespace ImageDeduper
     ///// </summary>
     //private CancellationTokenSource? ThreadCancellationToken { get; set; }
 
-    /// <summary>
-    /// Determines if a file type is for a supported image.
-    /// </summary>
-    private static bool IsSupportedFileType(string path)
-    {
-      var ext = Path.GetExtension(path);
-      return ext.Length != 0 && PW.Drawing.Imaging.GdiImageDecoderFormats.IsSupported(ext);
-    }
+
 
     /// <summary>
     /// Creates a file system watcher dedicated to files.
@@ -219,7 +205,7 @@ namespace ImageDeduper
     //           *  that it always triggers for new directories. Duplicate image-created events will be combined later anyway.
     //           *  
     //           */
-    //          FileSystem.EnumerateGdiSupportedImages(directory, SearchOption.TopDirectoryOnly)
+    //          FileSystem.EnumerateImages(directory, SearchOption.TopDirectoryOnly)
     //            .ForEach(FileEventBuffer.AddCreated);
     //        }
 

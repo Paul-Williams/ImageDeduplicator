@@ -8,6 +8,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using static PW.ImageDeduplicator.Common.ImageHelper;
 
 namespace XnaFan.ImageComparison
 {
@@ -15,17 +16,18 @@ namespace XnaFan.ImageComparison
   {
     public static async Task<ImageEntity?> TryCreateImageEntityAsync(this FilePath file)
     {
-      Guard.NotNull(file, nameof(file));
+      ArgumentNullException.ThrowIfNull(file);
 
       try
       {
-        var fi = new FileInfo((string)file);
+        var fi = file.ToFileInfo();
 
         using var stream = await fi.WaitForAccessAsync(TimeSpan.FromSeconds(3));
 
         if (stream is null) return null;
 
-        using var image = Image.FromStream(stream);
+        // Do not have a method to load WebP from stream.
+        using var image = fi.IsWebP() ? LoadImage(fi.FullName) : Image.FromStream(stream);
         return new ImageEntity
         {
           Bytes = Thumbnail.GetBytes(image),
@@ -54,7 +56,7 @@ namespace XnaFan.ImageComparison
 
       try
       {
-        using var image = Image.FromFile(file.FullName);
+        using var image = LoadImage(file.FullName); //Image.FromFile(file.FullName);
         return new ImageEntity
         {
           Bytes = Thumbnail.GetBytes(image),

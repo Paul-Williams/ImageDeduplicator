@@ -3,6 +3,7 @@ using PubSubEvents;
 using PubSubEvents.DatabaseEvents;
 using PW.Extensions;
 using PW.FailFast;
+using PW.ImageDeduplicator.Common;
 using PW.IO.FileSystemObjects;
 using System;
 using System.Collections.Generic;
@@ -156,7 +157,7 @@ namespace ImageDeduper
                *  for the top-level directory, not sub-directories. Reverting back to using SearchOption.AllDirectories.
                *  
                */
-              directory.EnumerateGdiSupportedImages(SearchOption.AllDirectories)
+              directory.EnumerateImages(SearchOption.AllDirectories)
                 .ForEach(FileEventBuffer.AddCreated);
             }
 

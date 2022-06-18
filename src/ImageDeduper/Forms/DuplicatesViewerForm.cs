@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Unity;
 using static PW.WinForms.MsgBox;
+using static PW.ImageDeduplicator.Common.ImageHelper;
 
 namespace ImageDeduper;
 
@@ -109,14 +110,17 @@ public partial class DuplicatesViewerForm : Form
 
   private void DataGrid_MouseClick(object sender, MouseEventArgs e)
   {
-    if (e.Button != MouseButtons.Right) return;
-    if (BindingSource.Current is not ImageGroupCollection group) return;
+    // TODO: This has been disabled until menu is fixed.
+    // It is out of sync and is deleting the wrong image !!
 
-    if (DataGrid.ContextMenuStrip is null) DataGrid.ContextMenuStrip = new DuplicateImagesContextMenu(EA);
-    ((DuplicateImagesContextMenu)DataGrid.ContextMenuStrip)
-      .ProvideData(group, DataGrid.SelectedItems().ToArray());
+    //if (e.Button != MouseButtons.Right) return;
+    //if (BindingSource.Current is not ImageGroupCollection group) return;
 
-    DataGrid.ContextMenuStrip.Show(DataGrid, e.Location);
+    //if (DataGrid.ContextMenuStrip is null) DataGrid.ContextMenuStrip = new DuplicateImagesContextMenu(EA);
+    //((DuplicateImagesContextMenu)DataGrid.ContextMenuStrip)
+    //  .ProvideData(group, DataGrid.SelectedItems().ToArray());
+
+    //DataGrid.ContextMenuStrip.Show(DataGrid, e.Location);
 
 
   }
@@ -133,6 +137,8 @@ public partial class DuplicatesViewerForm : Form
         if (Selected.Count == 0) return;
 
         var paths = Selected.Select(x => (FilePath)x.Path).ToArray();
+
+        CleanupPictureBoxImage();
 
         // Delete all first, then remove from group.
         // Prevents bindings loading images and causing glitches with deletions.
@@ -163,7 +169,20 @@ public partial class DuplicatesViewerForm : Form
 
   private void DataGrid_SelectionChanged(object? sender, EventArgs e)
   {
-    if (DataGrid.SelectedItem() is ImageEntity item) PictureBox.ImageLocation = item.Path;
+    if (DataGrid.SelectedItem() is ImageEntity item)
+    {
+      CleanupPictureBoxImage();
+
+      if (IsWebPFile(item.Path)) PictureBox.Image = LoadImage(item.Path);
+      else PictureBox.ImageLocation = item.Path;
+    }
+  }
+
+  private void CleanupPictureBoxImage()
+  {
+    var oldPic = PictureBox.Image;
+    PictureBox.Image = null;
+    if (oldPic != null) oldPic.Dispose();
   }
 
 

@@ -162,7 +162,7 @@ namespace TestBed
 
 
     //private static IEnumerable<FileInfo> GetImageEnumerator() =>
-    //  new DirectoryInfo(@"C:\Windows\Web\Screen\").EnumerateGdiSupportedImages(SearchOption.AllDirectories);
+    //  new DirectoryInfo(@"C:\Windows\Web\Screen\").EnumerateImages(SearchOption.AllDirectories);
 
     //private static async Task ProcessUsingDataFlowBlocksAsync()
     //{

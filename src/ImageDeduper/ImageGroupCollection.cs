@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using static PW.ImageDeduplicator.Common.ImageHelper;
 
 namespace ImageDeduper
 {
@@ -38,7 +39,7 @@ namespace ImageDeduper
       Images.Select(x => x.Path).FirstOrDefault(File.Exists).IfNotNull(TryLoadImage);
 
     // This should use the method, in PW.Common, that does not lock the file.
-    private Image? TryLoadImage(string path) => ValueOrDefault(path, x=>Image.FromFile(path));
+    private Image? TryLoadImage(string path) => ValueOrDefault(path, x => LoadImage(path));
 
 
     /// <summary>

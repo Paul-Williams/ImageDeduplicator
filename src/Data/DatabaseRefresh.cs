@@ -21,6 +21,7 @@ using XnaFan.ImageComparison;
 using static PW.IO.DirectoryInfoExtensions;
 using static PW.IO.DirectoryExtensions;
 using static PW.Functional.FuncExtensions;
+using PW.ImageDeduplicator.Common;
 
 namespace Data
 {
@@ -221,7 +222,7 @@ namespace Data
     ///////// </summary>
     //////private static TransformManyBlock<DirectoryInfo, FileOp> TransformNewDirectoryToFilesBlock() =>
     //////  new TransformManyBlock<DirectoryInfo, FileOp>(directory =>
-    //////    directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly)
+    //////    directory.EnumerateImages(SearchOption.TopDirectoryOnly)
     //////      .Select(file => new FileOp(file, DbOperation.Insert)));
 
     /// <summary>
@@ -240,7 +241,7 @@ namespace Data
             {
               // Directory already exists in the database - Only add/update new/changed files - Ignore the rest.
               var fileOps = new List<FileOp>();
-              foreach (var file in directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly))
+              foreach (var file in directory.EnumerateImages(SearchOption.TopDirectoryOnly))
               {
                 // DEBUG
                 //Console.WriteLine(file.FullName);
@@ -260,7 +261,7 @@ namespace Data
 
               var t = directory.Value;
 
-              var t2 = directory.EnumerateGdiSupportedImages(SearchOption.TopDirectoryOnly).ToArray();
+              var t2 = directory.EnumerateImages(SearchOption.TopDirectoryOnly).ToArray();
               return t2.Select(file => new FileOp(file, DbOperation.Insert));
             }
           }
